@@ -1,5 +1,0 @@
-setting,mean_reward,std_reward
-clean,1000.0,0.0
-noise_0.01,1000.0,0.0
-noise_0.05,1000.0,0.0
-masked_obs_1,31.9,5.146843692983108
