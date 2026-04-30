@@ -138,7 +138,7 @@ Policy performance under visual degradation proxy evaluation:
 
 Severe visual noise produced a strong performance drop, while blur, occlusion, and brightness changes had limited impact in this proxy setup.
 
-This suggests that sufficiently corrupted observations can significantly affect downstream decision-making and control stability.
+This suggests that sufficiently corrupted observations can significantly affect downstream control stability in this simplified setup.
 
 This provides a minimal proxy for how degraded perception may affect downstream control behavior.
 
