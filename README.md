@@ -152,7 +152,6 @@ This provides a minimal proxy for how degraded perception may affect downstream 
 - `evaluate.py` — deterministic policy evaluation
 - `evaluate_shift.py` — observation perturbation evaluation
 - `evaluate_visual_shift.py` — visual degradation to control-impact proxy evaluation
-- `NOTES.md` — technical notes and interview explanations
 - `requirements.txt` — Python dependencies
 - `models/ppo_inverted_pendulum.zip` — trained PPO model
 - `outputs/reward_log.csv` — reward log
