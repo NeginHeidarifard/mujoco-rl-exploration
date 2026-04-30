@@ -7,7 +7,7 @@ This is a minimal, honest reinforcement learning exploration using:
 - CPU-only training
 - Reward curve logging and plotting
 
-Author: Negin Heidarifard
+
 """
 
 import os
