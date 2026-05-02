@@ -16,19 +16,33 @@ from pixels.
 ## 2. There is no formal distribution shift
 
 The sensitivity analysis in `evaluate_observation_noise.py` adds
-Gaussian noise to the observation vector at inference time. This is a
-**proxy** for perception degradation, not distribution shift in the
-formal ML sense (e.g. covariate shift, sim-to-real, domain
-randomization, train/test environment mismatch).
+Gaussian noise to the observation vector at inference time. The
+dynamics shift in `evaluate_dynamics_shift.py` scales mass and gravity
+parameters of the simulator. These are **preliminary train-test
+mismatch settings**, not formal distribution shift in the ML sense
+(e.g. covariate shift, sim-to-real, domain randomization, formal
+benchmark protocols).
 
-The training distribution and the evaluation environment dynamics are
-identical. Only the observations seen by the policy are perturbed.
+The shifts are simple parametric modifications applied at evaluation
+time. There is no formal distributional analysis, no statistical
+hypothesis testing, and no comparison with established
+distribution-shift benchmarks.
 
-## 3. There is no adaptation
+## 3. Adaptation is limited to a simple fine-tuning baseline
 
-The policy is trained once and then evaluated under perturbations.
-There is no online adaptation, no meta-learning, no fine-tuning under
-shift, and no test-time adaptation mechanism.
+The repository includes a simple fine-tuning baseline
+(`finetune_shift.py`) where the pretrained policy is further trained
+for 10,000 timesteps under shifted dynamics. This recovers full
+performance on the shifted setting.
+
+This is **not** meta-learning, **not** online adaptation, **not**
+test-time adaptation, and **not** any sophisticated continual learning
+mechanism. It is a simple supervised continuation of training under a
+different dynamics setting.
+
+The fine-tuning baseline is included to acknowledge that policy
+recovery under mismatch is possible with additional training, not to
+claim a novel adaptation algorithm.
 
 ## 4. evaluate_visual_shift.py is named imprecisely
 
@@ -57,6 +71,14 @@ comparison across environments, and no hyperparameter study.
 PPO is used because it is the default Stable-Baselines3 algorithm for
 continuous control. No comparison is made with SAC, TD3, or other
 algorithms.
+
+## 8. Dynamics shifts are limited to mass and gravity
+
+The dynamics shift evaluation scales only two parameters: body mass
+and gravity. Other relevant simulator parameters (friction, damping,
+actuator strength, contact dynamics) are not varied. The shifts also
+remain within the same simulator (MuJoCo) and the same task
+(InvertedPendulum), so this is not a sim-to-real or cross-task study.
 
 ---
 
