@@ -1,0 +1,16 @@
+setting,policy,mass_scale,gravity_scale,noise_std,mean_reward,std_reward
+clean,standard,1.0,1.0,0.0,1000.0,0.0
+gravity_shift,standard,1.0,1.5,0.0,1000.0,0.0
+combined_shift,standard,2.0,1.5,0.0,1000.0,0.0
+combined_noise,standard,2.0,1.5,0.05,965.4,103.80000000000001
+extreme_shift,standard,3.0,2.0,0.1,27.1,11.157508682497182
+clean,randomized,1.0,1.0,0.0,1000.0,0.0
+gravity_shift,randomized,1.0,1.5,0.0,1000.0,0.0
+combined_shift,randomized,2.0,1.5,0.0,1000.0,0.0
+combined_noise,randomized,2.0,1.5,0.05,1000.0,0.0
+extreme_shift,randomized,3.0,2.0,0.1,37.0,20.813457185196313
+clean,finetuned,1.0,1.0,0.0,1000.0,0.0
+gravity_shift,finetuned,1.0,1.5,0.0,1000.0,0.0
+combined_shift,finetuned,2.0,1.5,0.0,1000.0,0.0
+combined_noise,finetuned,2.0,1.5,0.05,1000.0,0.0
+extreme_shift,finetuned,3.0,2.0,0.1,25.7,8.80965379569481

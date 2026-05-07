@@ -6,7 +6,9 @@ This repository contains:
 - a state-based PPO baseline,
 - sensitivity analysis under observation perturbations,
 - a dynamics shift evaluation,
+- a domain-randomized PPO baseline for train-time dynamics variation,
 - a fine-tuning baseline for recovery under shifted dynamics,
+- a comparison of standard, domain-randomized, and fine-tuned policies under controlled train-test mismatch,
 - an exploratory visual PPO experiment trained directly on rendered RGB frames.
 
 > Limitations and scope are listed explicitly in [`LIMITATIONS.md`](LIMITATIONS.md).
@@ -22,9 +24,10 @@ This project aims to build practical familiarity with:
 - closed-loop policy behavior
 - sensitivity of learned policies to observation quality
 - preliminary train-test mismatch evaluation
+- comparison between train-time randomization and post-shift fine-tuning
 - basic perception-to-action pipelines from pixels to actions
 
-The goal is not to propose a new method, but to construct a clean, reproducible experimental setup for studying how observation quality and dynamics changes affect control performance.
+The goal is not to propose a new method, but to construct a clean, reproducible experimental setup for studying how observation quality, dynamics changes, train-time variability, and post-shift adaptation affect closed-loop control performance.
 
 ---
 
@@ -52,7 +55,7 @@ Two observation modalities are used:
 
 ![Reward Curve](outputs/reward_curve.png)
 
-This confirms the task is solved under state observations.
+This confirms the task is solved under clean state observations.
 
 ---
 
@@ -146,7 +149,39 @@ A simple fine-tuning experiment is included as a basic recovery baseline. The pr
 
 ---
 
-### 7. Exploratory Visual PPO (Pixel-Based Policy)
+### 7. Robustness under Train-Test Dynamics Mismatch
+
+As a lightweight extension, a domain-randomized PPO baseline was added where mass and gravity are randomized during training.
+
+A central question explored in this extension is whether robustness should emerge from training-time variability (domain randomization) or from lightweight post-shift adaptation after deployment mismatch occurs.
+
+Three policies are compared:
+
+- standard PPO trained on default dynamics,
+- domain-randomized PPO trained under varying mass/gravity settings,
+- fine-tuned PPO adapted after severe dynamics mismatch.
+
+The goal is not to claim sim-to-real robustness, but to study how simple robustness mechanisms affect closed-loop policy behavior under controlled train-test mismatch.
+
+**Results:**
+
+| Setting        | Standard PPO | Domain-Randomized PPO | Fine-Tuned PPO |
+|----------------|--------------|------------------------|----------------|
+| clean          | 1000.00      | 1000.00                | 1000.00        |
+| gravity_shift  | 1000.00      | 1000.00                | 1000.00        |
+| combined_shift | 1000.00      | 1000.00                | 1000.00        |
+| combined_noise | 965.40       | 1000.00                | 1000.00        |
+| extreme_shift  | 27.10        | 37.00                  | 25.70          |
+
+![Robustness Comparison](outputs/domain_randomization_comparison.png)
+
+**Observation:** Moderate train-time randomization improved tolerance under combined dynamics and observation mismatch in this setting, but severe deployment mismatch still caused failure across all policies. This suggests that simple dynamics randomization alone is insufficient under extreme observation corruption.
+
+**Note:** This is a lightweight comparison of robustness mechanisms in a controlled MuJoCo setting. It should not be interpreted as formal sim-to-real transfer or a general robustness benchmark.
+
+---
+
+### 8. Exploratory Visual PPO (Pixel-Based Policy)
 
 A PPO agent is trained directly on RGB frames:
 
@@ -169,7 +204,7 @@ RGB observations -> CNN policy -> action
 
 ---
 
-### 8. Visual Encoder Demonstration
+### 9. Visual Encoder Demonstration
 
 `perception_pipeline.py` demonstrates:
 
@@ -185,6 +220,7 @@ The CNN encoder is not integrated into the policy network in this script. It ser
 
 **Scripts:**
 - `train_ppo.py` - state-based PPO training
+- `train_domain_randomized_ppo.py` - PPO training with lightweight mass/gravity randomization
 - `train_visual_ppo.py` - exploratory visual PPO (CnnPolicy)
 - `pixel_wrapper.py` - RGB observation wrapper
 - `wrappers.py` - Gaussian observation noise wrapper
@@ -193,16 +229,21 @@ The CNN encoder is not integrated into the policy network in this script. It ser
 - `evaluate_shift.py` - observation perturbation evaluation
 - `evaluate_visual_shift.py` - visual degradation proxy (state-based)
 - `evaluate_dynamics_shift.py` - dynamics and observation shift evaluation
+- `evaluate_domain_randomized.py` - comparison of standard, domain-randomized, and fine-tuned policies
 - `finetune_shift.py` - fine-tuning baseline under shifted dynamics
 - `perception_pipeline.py` - CNN encoder demonstration
 
 **Models:**
 - `models/ppo_inverted_pendulum.zip` - state-based PPO
+- `models/ppo_domain_randomized.zip` - PPO trained with lightweight mass/gravity randomization
 - `models/ppo_visual_inverted_pendulum.zip` - exploratory visual PPO
 - `models/ppo_finetuned_shift.zip` - fine-tuned PPO under shifted dynamics
 
 **Outputs:**
 - `outputs/reward_curve.png` - state-based training curve
+- `outputs/domain_randomized_reward_curve.png` - domain-randomized PPO training curve
+- `outputs/domain_randomization_results.csv` - policy comparison results under train-test mismatch
+- `outputs/domain_randomization_comparison.png` - robustness comparison across policy variants
 - `outputs/visual_reward_curve.png` - visual PPO training curve
 - `outputs/finetune_reward_curve.png` - fine-tuning reward curve
 - `outputs/*.csv` - reward logs and evaluation results
@@ -221,6 +262,7 @@ Setup the environment:
 Train baselines:
 
     python train_ppo.py
+    python train_domain_randomized_ppo.py
     python train_visual_ppo.py
 
 Evaluate:
@@ -230,6 +272,7 @@ Evaluate:
     python evaluate_shift.py
     python evaluate_visual_shift.py
     python evaluate_dynamics_shift.py
+    python evaluate_domain_randomized.py
     python perception_pipeline.py
 
 Fine-tune under shifted dynamics:
@@ -249,11 +292,14 @@ This is an exploratory project.
 - meta-learning, online adaptation, or continual learning
 - sim-to-real transfer
 - real robot deployment
+- advanced robotics deployment expertise
 
 **It provides:**
 - a reproducible state-based PPO baseline
 - empirical sensitivity analysis under observation noise
 - a preliminary train-test mismatch evaluation (mass and gravity scaling)
+- a lightweight domain-randomized PPO baseline
+- a comparison between standard PPO, train-time dynamics randomization, and post-shift fine-tuning
 - a simple fine-tuning baseline that recovers performance under shifted dynamics
 - a working but unconverged pixel-to-action training pipeline
 - a standalone CNN encoder demonstration
@@ -266,7 +312,7 @@ This is an exploratory project.
 - longer visual PPO training (>=500K timesteps)
 - integration of the CNN encoder directly into the policy network
 - rigorous comparison of state vs. pixel robustness
-- evaluation under formal distribution shifts (domain randomization, sim-to-real)
+- more rigorous domain randomization protocols and sim-to-real-inspired evaluation
 - multi-seed evaluation and statistical analysis
 - meta-learning or online adaptation mechanisms
 - scaling to more complex MuJoCo tasks (HalfCheetah, Hopper, Walker2D)
