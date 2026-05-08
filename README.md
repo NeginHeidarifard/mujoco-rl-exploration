@@ -183,6 +183,7 @@ The goal is not to claim sim-to-real robustness, but to study how simple robustn
 **Note:** This is a lightweight comparison of robustness mechanisms in a controlled MuJoCo setting. It should not be interpreted as formal sim-to-real transfer or a general robustness benchmark.
 
 ---
+
 ### 8. Exploratory Visual PPO (Pixel-Based Policy)
 
 A PPO agent is trained directly on RGB frames:
