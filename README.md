@@ -148,7 +148,6 @@ A simple fine-tuning experiment is included as a basic recovery baseline. The pr
 **Note:** This is a **simple fine-tuning baseline**, not meta-learning, online adaptation, or any sophisticated continual learning mechanism. See `LIMITATIONS.md`.
 
 ---
-
 ### 7. Robustness under Train-Test Dynamics Mismatch
 
 As a lightweight extension, a domain-randomized PPO baseline was added where mass and gravity are randomized during training.
@@ -177,9 +176,9 @@ The goal is not to claim sim-to-real robustness, but to study how simple robustn
 
 **Observation:** Moderate train-time randomization improved tolerance under combined dynamics and observation mismatch in this setting, but severe deployment mismatch still caused failure across all policies. This suggests that simple dynamics randomization alone is insufficient under extreme observation corruption.
 
-**Note:** This is a lightweight comparison of robustness mechanisms in a controlled MuJoCo setting. It should not be interpreted as formal sim-to-real transfer or a general robustness benchmark.
+**Note on the fine-tuned policy:** The fine-tuned PPO policy was adapted under severe dynamics shift only (mass x3.0, gravity x2.0, noise 0.0), where it recovered full performance. In the cross-shift comparison, `extreme_shift` additionally includes observation noise (`noise=0.10`). Therefore, the lower fine-tuned performance in this row reflects failure under combined dynamics and observation corruption, not a contradiction with the fine-tuning recovery result.
 
----
+**Note:** This is a lightweight comparison of robustness mechanisms in a controlled MuJoCo setting. It should not be interpreted as formal sim-to-real transfer or a general robustness benchmark.
 
 ### 8. Exploratory Visual PPO (Pixel-Based Policy)
 
