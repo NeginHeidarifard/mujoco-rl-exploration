@@ -2,6 +2,8 @@
 
 A minimal, reproducible reinforcement learning exploration in MuJoCo using Stable-Baselines3.
 
+Main insight: policies remained highly tolerant to moderate dynamics-only changes, but performance degraded rapidly once observation reliability deteriorated under combined train-test mismatch.
+
 This repository contains:
 - a state-based PPO baseline,
 - sensitivity analysis under observation perturbations,
